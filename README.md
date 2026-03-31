@@ -12,7 +12,8 @@ This repository contains a local assessment setup using PostgreSQL, dbt, and Pyt
 ## Prerequisites
 - Docker Desktop installed and running
 - Docker Compose available through `docker compose`
-- The assessment CSV files are placed in the `data/` folder (do not rename the files)
+- Download the CSV files from https://drive.google.com/drive/u/1/folders/1ZUK3hjSHhLOt81v_1JK8Hzrlsjq8TMn1
+- The assessment CSV files should be placed in the `data/` folder (do not rename the files)
 
 ## Local setup
 1. Clone or download the repository.
