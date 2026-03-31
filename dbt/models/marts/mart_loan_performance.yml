@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: mart_loan_performance
+    description: >
+      Current-state loan performance mart that combines the latest service,
+      entity, partner, service term, transaction, and risk attributes into a
+      single incremental table. Because upstream staging inputs are current-state
+      datasets, descriptive attributes reflect the latest available values rather
+      than a historical point-in-time snapshot.
+    columns:
+      - name: service_id
+        description: Unique loan/service identifier.
+        tests:
+          - unique
+          - not_null
+
+      - name: entity_id
+        description: Identifier of the entity that received the service.
+
+      - name: partner_id
+        description: Identifier of the origination partner associated with the service.
+
+      - name: financier_id
+        description: Financier currently associated with the service.
+        tests:
+          - not_null
+
+      - name: type
+        description: Service or loan type from the latest service snapshot.
+
+      - name: business_name
+        description: Business name from the latest entity record when applicable.
+
+      - name: full_name
+        description: Full legal or personal name from the latest entity record.
+
+      - name: entity_type
+        description: Entity classification from the latest service snapshot.
+
+      - name: partner_name
+        description: Origination partner name from the latest partner snapshot.
+
+      - name: credit_rating
+        description: Latest available credit rating for the entity, financier, and product combination.
+
+      - name: requested_amount
+        description: Original requested financing amount for the service.
+
+      - name: currency_code
+        description: Currency code for the requested amount and related balances.
+
+      - name: current_status
+        description: Latest known lifecycle status of the service.
+
+      - name: total_pending_amount
+        description: Pending amount from the most recent transaction record for the service.
+
+      - name: dpd
+        description: Days past due calculated from the latest transaction date when a pending amount remains.
+
+      - name: dpd_bucket
+        description: Aging bucket for DPD using 0, 1-30, 31-60, 61-90, and 90+ day bands.
+
+      - name: risk_adjusted_return
+        description: Markup multiplied by one minus probability of default.
+
+      - name: early_default_risk
+        description: Flag for loans early in tenor that are already materially overdue.
+
+    tests:
+      - no_dpd_for_settled:
+          arguments:
+            status_column: current_status
+            dpd_column: dpd

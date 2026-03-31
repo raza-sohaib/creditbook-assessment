@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: staging
+    schema: staging
+    tables:
+      - name: dim_entities
+      - name: dim_partners
+      - name: dim_financiers
+      - name: dim_entity_products
+      - name: dim_risks
+      - name: services_latest
+      - name: service_terms_latest
+      - name: fact_transactions

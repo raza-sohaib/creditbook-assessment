@@ -1,0 +1,21 @@
+name: 'creditbook_assessment'
+version: '1.0.0'
+config-version: 2
+
+profile: 'creditbook_assessment'
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  creditbook_assessment:
+    staging:
+      +materialized: ephemeral
+      +schema: staging
+    marts:
+      +materialized: incremental
+      +schema: marts

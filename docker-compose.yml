@@ -1,0 +1,69 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: creditbook_postgres
+    environment:
+      POSTGRES_DB: creditbook
+      POSTGRES_USER: creditbook
+      POSTGRES_PASSWORD: creditbook
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init_sql:/docker-entrypoint-initdb.d
+      - ./data:/seed_data:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U creditbook -d creditbook"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  dbt:
+    build:
+      context: ./dbt
+      dockerfile: Dockerfile
+    container_name: creditbook_dbt
+    depends_on:
+      postgres:
+        condition: service_healthy
+    working_dir: /usr/app
+    volumes:
+      - ./dbt:/usr/app
+    environment:
+      DBT_PROFILES_DIR: /usr/app
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: creditbook
+      PGPASSWORD: creditbook
+      PGDATABASE: creditbook
+    command: "tail -f /dev/null"
+
+  python:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    container_name: creditbook_python
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      # Postgres
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: creditbook
+      PGPASSWORD: creditbook
+      PGDATABASE: creditbook
+
+      # AWS credentials
+      AWS_ACCESS_KEY_ID: <<YOUR ACCESS KEY>>
+      AWS_SECRET_ACCESS_KEY: <<YOUR ACCESS SECRET>>
+      AWS_DEFAULT_REGION: <<YOUR AWS REGION>>
+      EXPORT_BUCKET: <<YOUR S3 BUCKET>> 
+
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

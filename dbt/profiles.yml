@@ -1,0 +1,12 @@
+creditbook_assessment:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('PGHOST', 'localhost') }}"
+      port: "{{ env_var('PGPORT', '5432') | int }}"
+      user: "{{ env_var('PGUSER', 'creditbook') }}"
+      password: "{{ env_var('PGPASSWORD', 'creditbook') }}"
+      dbname: "{{ env_var('PGDATABASE', 'creditbook') }}"
+      schema: "{{ env_var('PGSCHEMA', 'analytics') }}"
+      threads: 4
