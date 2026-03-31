@@ -1,0 +1,2 @@
+- Keep all the files downloaded from Google drive into this folder
+- Do not change file names else Postgre will fail to copy these files
